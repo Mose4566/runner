@@ -26,5 +26,6 @@ let view = {
       view.can.style.top = (window.innerHeight - view.can.height) / 2 + "px";
     }
     car.resize(oldWidth, oldHeight);
+    road.resize(oldWidth, oldHeight);
   },
 };

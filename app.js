@@ -13,6 +13,7 @@ let app = {
   init: function () {
     view.init();
     car.init();
+    road.init();
     controller.init();
 
     window.onresize = view.resize;
