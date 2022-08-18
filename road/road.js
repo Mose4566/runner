@@ -19,9 +19,11 @@ let road = {
       },
     },
   ],
+  angle: -Math.PI / 2,
   color: "yellow",
-  aspectRatio: 3 / 10,
-  relativeWidth: 0.1,
+  aspectRatio: 1 / 10,
+  relativeHeight: 0.2,
+  relativeSpacing: 2,
   halfDim: {
     x: undefined,
     y: undefined,
@@ -31,45 +33,39 @@ let road = {
     y: undefined,
   },
   draw: function () {
-    // view.con.translate(car.pos.x, car.pos.y);
-    // view.con.rotate(car.pos.a);
-    // view.con.drawImage(
-    //   car.img,
-    //   -car.halfDim.x,
-    //   -car.halfDim.y,
-    //   car.dim.x,
-    //   car.dim.y
-    // );
-    // view.con.rotate(-car.pos.a);
-    // view.con.translate(-car.pos.x, -car.pos.y);
+    view.con.fillStyle = road.color;
+    console.log("-------------------");
+    for (let i = 0; i < road.dashes.length; ++i) {
+      let dash = road.dashes[i];
+      console.log(dash.pos);
+      view.con.translate(dash.pos.x, dash.pos.y);
+      view.con.rotate(road.angle);
+      view.con.fillRect(
+        -road.halfDim.x,
+        -road.halfDim.y,
+        road.dim.x,
+        road.dim.y
+      );
+      view.con.rotate(-road.angle);
+      view.con.translate(-dash.pos.x, -dash.pos.y);
+    }
   },
   update: function (timeChange) {
-    // let angle = -Math.PI / 2;
-    // if (controller.d || controller.ArrowRight) {
-    //   car.pos.x += car.speed.x * timeChange;
-    //   angle += Math.PI / 8;
-    // }
-    // if (controller.a || controller.ArrowLeft) {
-    //   car.pos.x -= car.speed.x * timeChange;
-    //   angle -= Math.PI / 8;
-    // }
-    // car.pos.a = angle;
-
-    // if (car.pos.x > can.width - car.halfDim.y) {
-    //   car.pos.x = can.width - car.halfDim.y;
-    //   car.pos.a = car.relativeStartPos.a;
-    // }
-    // if (car.pos.x < car.halfDim.y) {
-    //   car.pos.x = car.halfDim.y;
-    //   car.pos.a = car.relativeStartPos.a;
-    // }
+    for (let i = 0; i < road.dashes.length; ++i) {
+      let dash = road.dashes[i];
+      dash.pos.y += car.speed.y * timeChange;
+      if (dash.pos.y > view.can.height + road.halfDim.x) {
+        dash.pos.y -= road.dim.x * road.relativeSpacing * road.dashes.length;
+      }
+    }
   },
   init: function () {},
   resize: function (oldWidth, oldHeight) {
-    road.dim.x = road.relativeWidth * can.width;
+    road.dim.x = road.relativeHeight * can.height;
     road.dim.y = road.dim.x * road.aspectRatio;
     road.halfDim.x = road.dim.x / 2;
     road.halfDim.y = road.dim.y / 2;
+    let midDashIndex = Math.floor(road.dashes.length / 2);
     for (let i = 0; i < road.dashes.length; i++) {
       let dash = road.dashes[i];
       if (dash.pos.x === undefined) {
@@ -78,7 +74,9 @@ let road = {
         dash.pos.x = (can.width * dash.pos.x) / oldWidth;
       }
       if (dash.pos.y === undefined) {
-        dash.pos.y = 0.5 * can.height; // fix this ; only valid for middle dash
+        dash.pos.y =
+          0.5 * can.height +
+          (i - midDashIndex) * road.dim.x * road.relativeSpacing;
       } else {
         dash.pos.y = (can.height * dash.pos.y) / oldHeight;
       }

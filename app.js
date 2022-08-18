@@ -3,8 +3,10 @@ let app = {
 
   animate: function (timeNow) {
     let timeChange = timeNow - app.timePrior;
+    road.update(timeChange);
     car.update(timeChange);
     view.con.clearRect(0, 0, view.can.width, view.can.height);
+    road.draw();
     car.draw();
     app.timePrior = timeNow;
     requestAnimationFrame(app.animate);
