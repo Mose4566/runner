@@ -34,10 +34,10 @@ let road = {
   },
   draw: function () {
     view.con.fillStyle = road.color;
-    console.log("-------------------");
+    // console.log("-------------------");
     for (let i = 0; i < road.dashes.length; ++i) {
       let dash = road.dashes[i];
-      console.log(dash.pos);
+      // console.log(dash.pos);
       view.con.translate(dash.pos.x, dash.pos.y);
       view.con.rotate(road.angle);
       view.con.fillRect(

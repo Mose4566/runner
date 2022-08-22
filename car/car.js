@@ -7,6 +7,10 @@ let car = {
     x: undefined,
     y: undefined,
   },
+  acceleration: 0.0000005,
+  maxRelativeSpeed: 2.1 / 1000,
+  minRelativeSpeed: 0.7 / 1000,
+  turnFactor: 0.8,
   img: undefined,
   aspectRatio: 803 / 1443,
   relativeWidth: 0.2,
@@ -65,6 +69,25 @@ let car = {
       car.pos.x = car.halfDim.y;
       car.pos.a = car.relativeStartPos.a;
     }
+
+    if (controller.s || controller.ArrowDown) {
+      car.relativeSpeed.y -= timeChange * car.acceleration;
+      if (car.relativeSpeed.y < car.minRelativeSpeed) {
+        car.relativeSpeed.y = car.minRelativeSpeed;
+      }
+      car.relativeSpeed.x = car.relativeSpeed.y * car.turnFactor;
+      car.speed.y = car.relativeSpeed.y * can.height;
+      car.speed.x = car.relativeSpeed.x * can.width;
+    }
+    if (controller.w || controller.ArrowUp) {
+      car.relativeSpeed.y += timeChange * car.acceleration;
+      if (car.relativeSpeed.y > car.maxRelativeSpeed) {
+        car.relativeSpeed.y = car.maxRelativeSpeed;
+      }
+      car.relativeSpeed.x = car.relativeSpeed.y * car.turnFactor;
+      car.speed.y = car.relativeSpeed.y * can.height;
+      car.speed.x = car.relativeSpeed.x * can.width;
+    }
   },
   resize: function (oldWidth, oldHeight) {
     car.dim.x = car.relativeWidth * can.width;
@@ -81,7 +104,7 @@ let car = {
     } else {
       car.pos.y = (can.height * car.pos.y) / oldHeight;
     }
-    car.speed.x = car.relativeSpeed.x * can.width;
+    car.speed.x = car.relativeSpeed.y * car.turnFactor * can.width;
     car.speed.y = car.relativeSpeed.y * can.height;
   },
   init: function () {
